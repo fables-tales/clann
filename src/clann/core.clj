@@ -56,7 +56,7 @@
                           thisNeuronActual, 
                           previousLayerActivations]
   (map #(* (neuronError thisNeuronExpected thisNeuronActual) %1) 
-          previousLayerActivations))
+       previousLayerActivations))
 
 (defn newNeuronWeights [weights, delta]
   (map #(+ (first %1) (second %1)) (zip weights delta)))
@@ -76,8 +76,8 @@
 
 
 (defn nextWeights [previousWeights,
-                            sample,
-                            label]
+                   sample,
+                   label]
   (let [answer (feedForward sample previousWeights)]
     (newWeights (first label) 
                 (first answer) 
