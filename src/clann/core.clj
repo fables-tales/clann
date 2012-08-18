@@ -3,22 +3,22 @@
 (use 'clojure.contrib.generic.math-functions)
 
 (defn zip [a,b]
- (map vector a b))
+  (map vector a b))
 
 (defn sum [a]
- (reduce + a))
+  (reduce + a))
 
 (defn sigmoid [v]  
- (/ 1.0 (inc (exp (- v)))))
+  (/ 1.0 (inc (exp (- v)))))
 
 (defn inverseSigmoid [v]
   (-(log (dec (/ 1.0 v)))))
 
 (defn multiply-pair [pair]
- (* (first pair) (second pair)))
+  (* (first pair) (second pair)))
 
 (defn computeWeightSum [inputs, weights]
- (sum (map multiply-pair (zip inputs weights))))
+  (sum (map multiply-pair (zip inputs weights))))
 
 
 (defn activation [inputs, weights]
