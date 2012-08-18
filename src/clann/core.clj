@@ -61,7 +61,6 @@
 (defn newNeuronWeights [weights, delta]
   (map #(+ (first %1) (second %1)) (zip weights delta)))
 
-
 (def weights1 (makeNetworkLayerWeights 2 1))
 (def sample [(sigmoid 1),(sigmoid 0)])
 (def label [1])
@@ -74,7 +73,6 @@
                   weights]
   (newNeuronWeights weights (neuronWeightsDelta e a act)))
 
-
 (defn nextWeights [previousWeights,
                    sample,
                    label]
@@ -83,8 +81,6 @@
                 (first answer) 
                 sample 
                 (first previousWeights))))
-
-
 
 (defn doEpochs [n]
   (last (take n (iterate (fn [weights] [(nextWeights weights sample label)]) weights1))))
