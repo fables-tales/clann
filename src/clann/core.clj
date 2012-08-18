@@ -67,10 +67,7 @@
 (def layer1results (feedForward sample weights1))
 
 
-(defn newWeights [e,
-                  a,
-                  act,
-                  weights]
+(defn newWeights [e, a, act, weights]
   (newNeuronWeights weights (neuronWeightsDelta e a act)))
 
 (defn nextWeights [previousWeights,
