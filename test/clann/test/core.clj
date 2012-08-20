@@ -2,6 +2,13 @@
   (:use [clann.core])
   (:use [clojure.test]))
 
+(def weights1 (makeNetworkLayerWeights 2 1))
+(def sample [(sigmoid 1),(sigmoid 0)])
+(def label [1])
+(def layer1results (feedForward sample weights1))
+
+
+
 (deftest sigmoid-inverse-sigmoid
          (is (> 0.000001 (Math/abs (- 0.5 (inverseSigmoid (sigmoid 0.5))))))
          (is (> 0.000001 (let [r (rand)] (- r (inverseSigmoid (sigmoid r)))))))
@@ -33,4 +40,18 @@
 
 
 (deftest propagate-simple-test
-         (is (> 0.99 (first (feedForward sample (doEpochs 1000))))))
+         (is (> 0.99
+                (first
+                  (feedForward
+                    sample (doEpochs 1000 weights1 sample label))))))
+
+
+(deftest propogate-complex-test
+         (let [result (feedForward [1,0] 
+                                   (doEpochs 10000 
+                                             (makeNetworkLayerWeights 2 3) 
+                                             [1,0] 
+                                             [1,0,1]))]
+           (is (> (first result)  0.99))
+           (is (< (second result) 0.01))
+           (is (> (nth result 2)  0.99))))
