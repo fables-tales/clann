@@ -56,25 +56,24 @@
      (- 1 thisNeuronActual) 
      (- thisNeuronExpected thisNeuronActual)))
 
-(defn neuronWeightsDelta [thisNeuronExpected, 
-                          thisNeuronActual, 
+(defn neuronWeightsDelta [error,
                           previousLayerActivations]
-  (map #(* (neuronError thisNeuronExpected thisNeuronActual) %1) 
+  (map #(* error %1) 
        previousLayerActivations))
 
 (defn newNeuronWeights [weights, delta]
   (map #(+ (first %1) (second %1)) (zip weights delta)))
 
 
-(defn newWeights [e, a, act, weights]
-  (newNeuronWeights weights (neuronWeightsDelta e a act)))
+(defn newWeights [error, act, weights]
+  (newNeuronWeights weights (neuronWeightsDelta error act)))
 
 (defn nextWeights [previousWeights,
                    sample,
                    label]
   (let [answer (feedForward sample previousWeights)
         threes (zip3 label answer previousWeights)]
-    (map #(newWeights (first %1) (second %1) sample (nth %1 2)) threes)))
+    (map #(newWeights (neuronError (first %1) (second %1)) sample (nth %1 2)) threes)))
 
 (defn doEpochs [n, weights, sample label]
   (loop [cnt n weights weights]
