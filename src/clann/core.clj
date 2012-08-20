@@ -5,6 +5,10 @@
 (defn zip [a,b]
   (map vector a b))
 
+
+(defn zip3 [a,b,c]
+  (map vector a b c))
+
 (defn sum [a]
   (reduce + a))
 
@@ -61,11 +65,6 @@
 (defn newNeuronWeights [weights, delta]
   (map #(+ (first %1) (second %1)) (zip weights delta)))
 
-(def weights1 (makeNetworkLayerWeights 2 1))
-(def sample [(sigmoid 1),(sigmoid 0)])
-(def label [1])
-(def layer1results (feedForward sample weights1))
-
 
 (defn newWeights [e, a, act, weights]
   (newNeuronWeights weights (neuronWeightsDelta e a act)))
@@ -73,11 +72,13 @@
 (defn nextWeights [previousWeights,
                    sample,
                    label]
-  (let [answer (feedForward sample previousWeights)]
-    (newWeights (first label) 
-                (first answer) 
-                sample 
-                (first previousWeights))))
+  (let [answer (feedForward sample previousWeights)
+        threes (zip3 label answer previousWeights)]
+    (map #(newWeights (first %1) (second %1) sample (nth %1 2)) threes)))
 
-(defn doEpochs [n]
-  (last (take n (iterate (fn [weights] [(nextWeights weights sample label)]) weights1))))
+(defn doEpochs [n, weights, sample label]
+  (loop [cnt n weights weights]
+    (if
+      (zero? cnt) 
+      weights 
+      (recur (dec cnt) (doall (nextWeights weights sample label))))))
