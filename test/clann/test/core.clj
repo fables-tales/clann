@@ -7,7 +7,11 @@
 (def label [1])
 (def layer1results (feedForward sample weights1))
 
-
+(defn round [v]
+  (let [n (int v)]
+    (if (>= (- v n) 0.5)
+      (inc n)
+      n)))
 
 (deftest sigmoid-inverse-sigmoid
          (is (> 0.000001 (Math/abs (- 0.5 (inverseSigmoid (sigmoid 0.5))))))
@@ -47,36 +51,36 @@
 
 (deftest propogate-complex-test
          (let [result (feedForward [1,0] 
-                                   (doEpochs 300000 
+                                   (doEpochs 3000 
                                              (makeNetworkLayerWeights 2 3) 
                                              [1,0] 
                                              [1,0,1]))]
-           (is (> (first result)  0.99))
-           (is (< (second result) 0.01))
-           (is (> (nth result 2)  0.99))))
+           (is (== (round (first result))  1))
+           (is (== (round (second result)) 0))
+           (is (== (round (nth result 2))  1))))
 
 (deftest two-layer-test
          (let [hiddenWeights (makeNetworkLayerWeights 2 3)
                outputWeights (makeNetworkLayerWeights 3 1)
                trainedWeights (trainTwoLayerPerceptron
-                                30000
+                                3000
                                 [hiddenWeights, outputWeights]
                                 sample
                                 [1])
                result (twoLayerPerceptron sample (first trainedWeights) (second trainedWeights))]
-           (is (> (first result) 0.99))
+           (is (== (round (first result)) 1))
            (is (== (count result) 1))))
 
 (deftest complex-two-layer-test
          (let [hiddenWeights (makeNetworkLayerWeights 2 8)
                outputWeights (makeNetworkLayerWeights 8 3)
                trainedWeights (trainTwoLayerPerceptron
-                                30000
+                                3000
                                 [hiddenWeights, outputWeights]
                                 sample
                                 [1,0,1])
                result (twoLayerPerceptron sample (first trainedWeights) (second trainedWeights))]
-           (is (> (first result)  0.99))
-           (is (< (second result) 0.01))
-           (is (> (nth result 2)  0.99))
+           (is (== (round (first result))  1))
+           (is (== (round (second result)) 0))
+           (is (== (round (nth result 2))  1))
            (is (== (count result) 3))))
