@@ -38,7 +38,6 @@
          (is (= [1,1] (feedForward [1,2] [[100,0],[0,50]])))
          (is (= [0.5, 0.5] (feedForward [1,2] [[0,0],[0,0]]))))
 
-
 (deftest propagate-simple-test
          (is (> 0.99
                 (first
@@ -48,10 +47,36 @@
 
 (deftest propogate-complex-test
          (let [result (feedForward [1,0] 
-                                   (doEpochs 10000 
+                                   (doEpochs 300000 
                                              (makeNetworkLayerWeights 2 3) 
                                              [1,0] 
                                              [1,0,1]))]
            (is (> (first result)  0.99))
            (is (< (second result) 0.01))
            (is (> (nth result 2)  0.99))))
+
+(deftest two-layer-test
+         (let [hiddenWeights (makeNetworkLayerWeights 2 3)
+               outputWeights (makeNetworkLayerWeights 3 1)
+               trainedWeights (trainTwoLayerPerceptron
+                                30000
+                                [hiddenWeights, outputWeights]
+                                sample
+                                [1])
+               result (twoLayerPerceptron sample (first trainedWeights) (second trainedWeights))]
+           (is (> (first result) 0.99))
+           (is (== (count result) 1))))
+
+(deftest complex-two-layer-test
+         (let [hiddenWeights (makeNetworkLayerWeights 2 8)
+               outputWeights (makeNetworkLayerWeights 8 3)
+               trainedWeights (trainTwoLayerPerceptron
+                                30000
+                                [hiddenWeights, outputWeights]
+                                sample
+                                [1,0,1])
+               result (twoLayerPerceptron sample (first trainedWeights) (second trainedWeights))]
+           (is (> (first result)  0.99))
+           (is (< (second result) 0.01))
+           (is (> (nth result 2)  0.99))
+           (is (== (count result) 3))))
