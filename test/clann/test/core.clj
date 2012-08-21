@@ -43,10 +43,10 @@
          (is (= [0.5, 0.5] (feedForward [1,2] [[0,0],[0,0]]))))
 
 (deftest propagate-simple-test
-         (is (> 0.99
-                (first
+         (is (== 1 
+                (round (first
                   (feedForward
-                    sample (doEpochs 1000 weights1 sample label))))))
+                    sample (doEpochs 1000 weights1 sample label)))))))
 
 
 (deftest propogate-complex-test
